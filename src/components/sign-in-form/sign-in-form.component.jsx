@@ -1,98 +1,84 @@
 import { useState } from 'react';
 
 import FormInput from '../form-input/form-input.component';
-import Button, { BUTTON_TYPE_CLASSES} from '../button/button.component';
+import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
 
 import {
-    signInWithGooglePopup,
-    createUserDocumentFromAuth,
-    signInAuthUserWithEmailAndPassword
+  signInAuthUserWithEmailAndPassword,
+  signInWithGooglePopup,
 } from '../../utils/firebase/firebase.utils';
 
-import './sign-in-form.styles.scss';
-
+import { SignInContainer, ButtonsContainer } from './sign-in-form.styles';
 
 const defaultFormFields = {
-    email: '',
-    password: '',
-}
+  email: '',
+  password: '',
+};
 
 const SignInForm = () => {
-    const [formFields, setFormFields] = useState(defaultFormFields);
-    const { email, password } = formFields;
+  const [formFields, setFormFields] = useState(defaultFormFields);
+  const { email, password } = formFields;
 
-    const resetFormFields = () => {
-        setFormFields(defaultFormFields);
+  const resetFormFields = () => {
+    setFormFields(defaultFormFields);
+  };
+
+  const signInWithGoogle = async () => {
+    await signInWithGooglePopup();
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      await signInAuthUserWithEmailAndPassword(email, password);
+      resetFormFields();
+    } catch (error) {
+      console.log('user sign in failed', error);
     }
+  };
 
-    const signInWithGoogle = async () => {
-        await signInWithGooglePopup();
-    }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    setFormFields({ ...formFields, [name]: value });
+  };
 
+  return (
+    <SignInContainer>
+      <h2>已有帳號</h2>
+      <span>輸入信箱 密碼</span>
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          label='Email'
+          type='email'
+          required
+          onChange={handleChange}
+          name='email'
+          value={email}
+        />
 
-        try {
-            const { user } = await signInAuthUserWithEmailAndPassword(
-                email,
-                password
-            );
-
-            resetFormFields();
-        } catch (error) {
-            switch (error.code) {
-                case 'auth/wrong-password':
-                    alert('密碼錯誤');
-                    break
-                case 'auth/user-not-found':
-                    alert('信箱錯誤');
-                    break;
-                default:
-                    console.log(error)
-            }
-            console.log(error)
-        }
-    }
-
-
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setFormFields({ ...formFields, [name]: value })
-    }
-
-
-    return (
-        <div className='sign-in-container'>
-            <h2>已有帳號?</h2>
-            <span>使用信箱和密碼登入</span>
-            <form onSubmit={handleSubmit}>
-                <FormInput
-                    label="Email"
-                    type="email"
-                    required onChange={handleChange}
-                    name="email"
-                    value={email}
-                />
-
-                <FormInput
-                    label="Password"
-                    type="password"
-                    required onChange={handleChange}
-                    name="password"
-                    value={password}
-                />
-                <div className='buttons-container'>
-                    <Button type="submit" >Sign Up</Button>
-                    <Button type="button" buttonType={BUTTON_TYPE_CLASSES.google} onClick={signInWithGoogle}>
-                        Google sign in
-                    </Button>
-                </div>
-            </form>
-        </div>
-    );
+        <FormInput
+          label='Password'
+          type='password'
+          required
+          onChange={handleChange}
+          name='password'
+          value={password}
+        />
+        <ButtonsContainer>
+          <Button type='submit'>登入</Button>
+          <Button
+            buttonType={BUTTON_TYPE_CLASSES.google}
+            type='button'
+            onClick={signInWithGoogle}
+          >
+            Google 登入
+          </Button>
+        </ButtonsContainer>
+      </form>
+    </SignInContainer>
+  );
 };
 
 export default SignInForm;
