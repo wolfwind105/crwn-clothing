@@ -18,19 +18,19 @@ const Checkout = () => {
     <CheckoutContainer>
       <CheckoutHeader>
         <HeaderBlock>
-          <span>產品</span>
+          <span>Product</span>
         </HeaderBlock>
         <HeaderBlock>
-          <span>描述</span>
+          <span>Description</span>
         </HeaderBlock>
         <HeaderBlock>
-          <span>數量</span>
+          <span>Quantity</span>
         </HeaderBlock>
         <HeaderBlock>
-          <span>價格</span>
+          <span>Price</span>
         </HeaderBlock>
         <HeaderBlock>
-          <span>刪除</span>
+          <span>Remove</span>
         </HeaderBlock>
       </CheckoutHeader>
       {cartItems.map((cartItem) => (

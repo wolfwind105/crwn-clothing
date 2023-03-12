@@ -26,7 +26,7 @@ const CartDropdown = () => {
         {cartItems.length ? (
           cartItems.map((item) => <CartItem key={item.id} cartItem={item} />)
         ) : (
-          <EmptyMessage>Your cart is empty</EmptyMessage>
+          <EmptyMessage>購物車是空的</EmptyMessage>
         )}
       </CartItems>
       <Button onClick={goToCheckoutHandler}>結帳</Button>
